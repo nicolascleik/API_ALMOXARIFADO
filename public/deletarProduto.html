@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deletar Produto</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+
+    <h1>Deletar Produto</h1>
+
+    <form id="formDeletar">
+        <div>
+            <label for="id">ID do Produto:</label>
+            <input type="number" id="id" name="id" placeholder="Digite o ID..." required>
+        </div>
+        <div>
+            <button type="submit" style="background-color: #d32f2f;">Excluir Permanentemente</button>
+        </div>
+    </form>
+
+    <br>
+    <button id="produtos">Ver lista de IDs (JSON)</button>
+    <button id="home">Voltar para Home</button>
+
+    <script>
+        document.getElementById("home").onclick = () => window.location.href = "/";
+        document.getElementById("produtos").onclick = () => window.location.href = '/produtos';
+
+        const form = document.getElementById("formDeletar");
+
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const idProduto = document.getElementById('id').value;
+
+            try {
+                const response = await fetch('/deletar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: idProduto })
+                });
+
+                const resultado = await response.json();
+
+                if (response.ok) {
+                    alert(resultado.message); 
+                    form.reset();
+                } else {
+                    alert("Atenção: " + resultado.erro); 
+                }
+
+            } catch (error) {
+                console.error(error);
+                alert("Erro ao tentar deletar.");
+            }
+        });
+    </script>
+</body>
+</html>
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Almoxarifado</title>
+</head>
+<body>
+    <form action="/deletar" method="post">
+        <div>
+            <label for="id">ID do Produto:</label>
+            <input type="number" id="id" name="id" placeholder="ID do produto" required>
+        </div>
+
+        <div>
+            <button type="submit">Deletar produto</button>
+        </div>
+    </form>
+
+    <div>
+        <button id="produtos">Ver todos os produtos</button>
+    </div>
+    <div>
+        <button id="home">Home</button>
+    </div>
+
+    <script>
+        const home = document.getElementById("home");
+        const produtos = document.getElementById("produtos");
+
+        home.addEventListener('click', function(){
+            window.location.href = "/";
+        });
+
+        produtos.addEventListener('click', function(){
+            window.location.href = '/produtos';
+        });
+    </script>
+</body>
+</html> -->

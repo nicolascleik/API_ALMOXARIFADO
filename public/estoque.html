@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estoque - Almoxarifado</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+
+    <h1>Controle de Estoque</h1>
+
+    <div style="display: flex; gap: 10px;">
+        <button id="btnCarregar">Atualizar Lista</button>
+        <button id="btnRelatorio" style="background-color: #ff9800; color: black;">Gerar Relatório</button>
+        <button id="btnHome">Voltar</button>
+    </div>
+
+    <table id="tabelaEstoque">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Produto</th>
+                <th>Preço (R$)</th>
+                <th>Qtd.</th>
+            </tr>
+        </thead>
+        <tbody id="corpoTabela">
+            </tbody>
+    </table>
+    
+    <p id="mensagemVazia" class="aviso-vazio" style="display: none;">Nenhum produto encontrado.</p>
+
+    <script>
+        document.getElementById("btnHome").onclick = () => window.location.href = "/";
+
+        document.getElementById("btnRelatorio").onclick = async () => {
+            try {
+                const res = await fetch('/relatorio'); 
+                if(res.ok) {
+                    alert("Relatório gerado e salvo no servidor!");
+                } else {
+                    alert("Erro ao gerar relatório.");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Erro de conexão.");
+            }
+        };
+
+        const btnCarregar = document.getElementById("btnCarregar");
+        const corpoTabela = document.getElementById("corpoTabela");
+        const msgVazia = document.getElementById("mensagemVazia");
+
+        async function carregarProdutos() {
+            try {
+                const response = await fetch('/produtos');
+                const listaProdutos = await response.json();
+
+                corpoTabela.innerHTML = "";
+
+                if (listaProdutos.length === 0) {
+                    msgVazia.style.display = "block";
+                    return;
+                }
+                msgVazia.style.display = "none";
+
+                listaProdutos.forEach(produto => {
+                    const linha = `
+                        <tr>
+                            <td>${produto.id}</td>
+                            <td style="font-weight: bold;">${produto.nome}</td>
+                            <td>R$ ${Number(produto.preco).toFixed(2)}</td>
+                            <td>${produto.quantidade} un</td>
+                        </tr>
+                    `;
+                    corpoTabela.innerHTML += linha;
+                });
+
+            } catch (error) {
+                console.error("Erro ao buscar produtos:", error);
+                alert("Erro ao carregar o estoque. Veja o console.");
+            }
+        }
+
+        carregarProdutos();
+        
+        btnCarregar.onclick = carregarProdutos;
+
+    </script>
+</body>
+</html>
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Almoxarifado</title>
+</head>
+<body>
+    <button id="produtos">Ver todos os produtos</button>
+    <button id="relatorio">Gerar relatorio de estoque</button>
+    <button id="inicio">Retornar para a pagina inicial</button>
+
+    <script>
+        const produtos = document.getElementById("produtos")
+        const gerarRelatorio = document.getElementById("relatorio")
+        const inicio = document.getElementById("inicio")
+
+        produtos.addEventListener('click', function(){
+            window.location.href = '/produtos';
+        });
+
+        gerarRelatorio.addEventListener('click', function(){
+            window.location.href = '/relatorio';
+        })
+
+        inicio.addEventListener('click', function(){
+            window.location.href = "/";
+        })
+    </script>
+</body>
+</html> -->

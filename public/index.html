@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Almoxarifado</title>
+    <link rel="stylesheet" href="./css/style.css"> </head>
+<body>
+
+    <h1>Cadastrar Produto</h1>
+
+    <form id="formAdicionar">
+        <div>
+            <label for="produto">Nome do Produto:</label>
+            <input type="text" id="produto" name="produto" placeholder="Ex: Mouse Gamer" required>
+        </div>
+        <div>
+            <label for="preco">Preço (R$):</label>
+            <input type="number" id="preco" name="preco" step="0.01" placeholder="Ex: 50.00" required>
+        </div>
+        <div>
+            <label for="quantidade">Quantidade:</label>
+            <input type="number" id="quantidade" name="quantidade" placeholder="Ex: 10" required>
+        </div>
+        <div>
+            <button type="submit">Adicionar Produto</button>
+        </div>
+    </form>
+
+    <br>
+    <button id="estoque">Abrir Painel de Estoque</button>
+    <button id="deletarProduto" style="background-color: #d32f2f;">Ir para Deleção</button>
+
+    <script>
+        document.getElementById("estoque").onclick = () => window.location.href = "/estoque";
+        document.getElementById("deletarProduto").onclick = () => window.location.href = "/atualizarProdutos";
+
+        const form = document.getElementById("formAdicionar");
+
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault(); 
+
+            const dados = {
+                produto: document.getElementById('produto').value, 
+                preco: document.getElementById('preco').value,
+                quantidade: document.getElementById('quantidade').value
+            };
+
+            try {
+                const response = await fetch('/adicionar', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(dados)
+                });
+
+                const resultado = await response.json(); 
+
+                if (response.ok) {
+                    alert("Sucesso: " + resultado.mensagem);
+                    form.reset(); 
+                } else {
+                    alert("Erro: " + resultado.erro);
+                }
+
+            } catch (erro) {
+                console.error(erro);
+                alert("Erro de conexão com o servidor.");
+            }
+        });
+    </script>
+</body>
+</html>
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Almoxarifado</title>
+    <link rel="stylesheet" href="style.css"> </head>
+</head>
+<body>
+    <form action="/adicionar" method="post">
+        <div>
+            <label for="produto">Nome do Produto:</label>
+            <input type="text" id="produto" name="produto" placeholder="Nome do produto" required>
+        </div>
+        <div>
+            <label for="preco">Preço do produto:</label>
+            <input type="number" id="preco" name="preco" placeholder="Preço do produto">
+        </div>
+        <div>
+            <label for="quantidade">Quantidade de items:</label>
+            <input type="number" id="quantidade" name="quantidade" placeholder="Quantidade de items">
+        </div>
+        <div>
+            <button type="submit">Adicionar</button>
+        </div>
+    </form>
+    <button id="estoque">Abrir estoque / Relatorio</button>
+    <button id="deletarProduto">Deletar Produto</button>
+
+    <script>
+        const estoque = document.getElementById("estoque");
+        const atualizar = document.getElementById("deletarProduto");
+
+        estoque.addEventListener('click', function(){
+            window.location.href = "/estoque";
+        });
+
+        atualizar.addEventListener('click', function(){
+            window.location.href = "/atualizarProdutos";
+        });
+    </script>
+</body>
+</html> -->
