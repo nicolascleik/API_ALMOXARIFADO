@@ -19,23 +19,29 @@ export async function relatorio(req, res){
         res.download(caminhoDoArquivo, (err) =>{
             if(err){
                 console.error("Erro ao enviar download:", err);
-                if (!res.headersSent) res.status(500).send("Erro ao baixar arquivo.");
+                if (!res.headersSent){
+                    return res.status(500).json({ erro: "Erro ao baixar arquivo." });
+                }
             }
         });
     } catch(error){
         console.error("Erro no Relatório:", error);
-        res.status(500).json({ erro: "Falha ao gerar relatório." });
+        return res.status(500).json({ erro: "Falha ao gerar relatório." });
     }
 }
 
 export async function adicionar(req, res){
-    try{
+    try{ 
         const produto = req.body.produto;
         const preco = req.body.preco;
         const quantidade = req.body.quantidade;
         
         if(!produto || !preco || !quantidade){
-            return res.status(400).json({erro: "Campos obrigatórios: nome, quantidade, preco."})
+            return res.status(400).json({error: "Campos obrigatórios: nome, quantidade, preco"})
+        }
+        
+        if (typeof preco != 'number' || typeof quantidade != 'number' || isNaN(preco) || isNaN(quantidade)){
+            return res.status(400).json({error: "Os campos 'preço' e 'quantidade' devem ser numeros"})
         }
 
         if (preco < 0) {
@@ -47,7 +53,7 @@ export async function adicionar(req, res){
         res.status(201).json({
             mensagem: "Produto criado com sucesso",
             id: novoId,
-            produto: { produto, quantidade, quantidade}
+            produto: { produto, preco, quantidade}
         });
     } catch (error){
         if (error.message === "PRECO_NEGATIVO") {
@@ -65,14 +71,14 @@ export async function remover(req, res){
         const resultado = await deleteById(id);
 
         if (resultado.affectedRows === 0){
-            return res.status(404).json({ erro: "Produto não encontrado para deleção." });
+            return res.status(404).json({ error: "Produto não encontrado para deleção." });
         }
 
         //res.redirect('/atualizarProdutos');
         res.status(200).json({ message: "Deletado com sucesso" });
     } catch (error){
         console.error(error);
-        return res.status(500).json({ erro: "Erro ao remover produto." });
+        return res.status(500).json({ error: "Erro ao remover produto." });
     }
 }
 

@@ -35,17 +35,7 @@
         document.getElementById("btnHome").onclick = () => window.location.href = "/";
 
         document.getElementById("btnRelatorio").onclick = async () => {
-            try {
-                const res = await fetch('/relatorio'); 
-                if(res.ok) {
-                    alert("Relatório gerado e salvo no servidor!");
-                } else {
-                    alert("Erro ao gerar relatório.");
-                }
-            } catch (err) {
-                console.error(err);
-                alert("Erro de conexão.");
-            }
+            window.location.href = '/relatorio';
         };
 
         const btnCarregar = document.getElementById("btnCarregar");

@@ -11,7 +11,7 @@ const __dirname = path.dirname(__filename);
 router.get("/", async (req, res) =>{
     res.sendFile(path.join(__dirname, '../../public/index.html'));
 });
-
+ 
 router.get("/estoque", async (req, res) =>{
     res.sendFile(path.join(__dirname, "../../public/estoque.html"))
 })
